@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KlanSavasi - Admin Panel</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="admin.css">
+</head>
+<body>
+  <div class="admin-layout">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-logo">
+        <h2>KLANSAVASI</h2>
+        <span>Admin Panel</span>
+      </div>
+      <nav class="sidebar-nav">
+        <a href="#" class="nav-item active" data-page="dashboard">
+          <span class="nav-icon">&#128202;</span> Dashboard
+        </a>
+        <a href="#" class="nav-item" data-page="players">
+          <span class="nav-icon">&#128100;</span> Oyuncular
+        </a>
+        <a href="#" class="nav-item" data-page="villages">
+          <span class="nav-icon">&#127968;</span> Köyler
+        </a>
+        <a href="#" class="nav-item" data-page="clans">
+          <span class="nav-icon">&#128081;</span> Klanlar
+        </a>
+        <a href="#" class="nav-item" data-page="settings">
+          <span class="nav-icon">&#9881;</span> Ayarlar
+        </a>
+        <a href="#" class="nav-item" data-page="announcements">
+          <span class="nav-icon">&#128227;</span> Duyurular
+        </a>
+        <a href="#" class="nav-item" data-page="logs">
+          <span class="nav-icon">&#128220;</span> Loglar
+        </a>
+      </nav>
+      <div class="sidebar-footer">
+        <button class="btn-logout" onclick="logout()">Çıkış Yap</button>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <!-- Login Screen -->
+      <div id="admin-login" class="admin-login">
+        <div class="login-card">
+          <h2>Admin Girişi</h2>
+          <form id="admin-login-form">
+            <input type="email" id="admin-email" placeholder="Email" required>
+            <input type="password" id="admin-password" placeholder="Şifre" required>
+            <button type="submit" class="btn-primary">Giriş Yap</button>
+            <div id="admin-login-error" class="error-msg"></div>
+          </form>
+        </div>
+      </div>
+
+      <!-- Pages -->
+      <div id="admin-pages" class="hidden">
+        <header class="page-header">
+          <h1 id="page-title">Dashboard</h1>
+          <div class="header-right">
+            <span id="admin-username"></span>
+          </div>
+        </header>
+
+        <div id="page-content"></div>
+      </div>
+    </main>
+  </div>
+
+  <script type="module" src="admin.js"></script>
+</body>
+</html>

@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KlanSavasi - Strateji Oyunu</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Cinzel:wght@400;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div id="app">
+    <!-- Login/Register Screen -->
+    <div id="auth-screen" class="screen active">
+      <div class="auth-bg"></div>
+      <div class="auth-container">
+        <div class="auth-logo">
+          <h1 class="logo-text">KLAN<span>SAVASI</span></h1>
+          <p class="logo-subtitle">Fethet. Yönet. Hükmet.</p>
+        </div>
+
+        <div class="auth-tabs">
+          <button class="auth-tab active" data-tab="login">Giriş Yap</button>
+          <button class="auth-tab" data-tab="register">Kayıt Ol</button>
+        </div>
+
+        <form id="login-form" class="auth-form active">
+          <div class="form-group">
+            <label>Email</label>
+            <input type="email" id="login-email" placeholder="email@adresiniz.com" required>
+          </div>
+          <div class="form-group">
+            <label>Şifre</label>
+            <input type="password" id="login-password" placeholder="••••••" required>
+          </div>
+          <button type="submit" class="btn btn-primary btn-full">Giriş Yap</button>
+          <div id="login-error" class="form-error"></div>
+        </form>
+
+        <form id="register-form" class="auth-form">
+          <div class="form-group">
+            <label>Kullanıcı Adı</label>
+            <input type="text" id="register-username" placeholder="KomutanAdınız" required minlength="3" maxlength="20">
+          </div>
+          <div class="form-group">
+            <label>Email</label>
+            <input type="email" id="register-email" placeholder="email@adresiniz.com" required>
+          </div>
+          <div class="form-group">
+            <label>Şifre</label>
+            <input type="password" id="register-password" placeholder="En az 6 karakter" required minlength="6">
+          </div>
+          <button type="submit" class="btn btn-primary btn-full">Hesap Oluştur</button>
+          <div id="register-error" class="form-error"></div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Game Screen -->
+    <div id="game-screen" class="screen">
+      <!-- Three.js Canvas -->
+      <canvas id="game-canvas"></canvas>
+
+      <!-- Top Bar - Resources -->
+      <div id="top-bar">
+        <div class="top-bar-left">
+          <div class="village-selector">
+            <select id="village-select"></select>
+          </div>
+        </div>
+        <div class="top-bar-center">
+          <div class="resource" id="res-wood">
+            <div class="resource-icon wood-icon"></div>
+            <span class="resource-amount" id="wood-amount">0</span>
+            <span class="resource-rate" id="wood-rate">(+0/h)</span>
+          </div>
+          <div class="resource" id="res-clay">
+            <div class="resource-icon clay-icon"></div>
+            <span class="resource-amount" id="clay-amount">0</span>
+            <span class="resource-rate" id="clay-rate">(+0/h)</span>
+          </div>
+          <div class="resource" id="res-iron">
+            <div class="resource-icon iron-icon"></div>
+            <span class="resource-amount" id="iron-amount">0</span>
+            <span class="resource-rate" id="iron-rate">(+0/h)</span>
+          </div>
+          <div class="resource" id="res-pop">
+            <div class="resource-icon pop-icon"></div>
+            <span class="resource-amount" id="pop-amount">0/0</span>
+          </div>
+          <div class="resource" id="res-storage">
+            <div class="resource-icon storage-icon"></div>
+            <span class="resource-amount" id="storage-amount">0</span>
+          </div>
+        </div>
+        <div class="top-bar-right">
+          <span class="points-display">Puan: <strong id="player-points">0</strong></span>
+          <span class="username-display" id="username-display"></span>
+          <button class="btn-icon" id="btn-messages" title="Mesajlar">&#9993;</button>
+          <button class="btn-icon" id="btn-settings" title="Ayarlar">&#9881;</button>
+        </div>
+      </div>
+
+      <!-- Navigation -->
+      <div id="nav-bar">
+        <button class="nav-btn active" data-view="village" title="Köy">
+          <span class="nav-icon">&#127968;</span>
+          <span class="nav-label">Köy</span>
+        </button>
+        <button class="nav-btn" data-view="map" title="Harita">
+          <span class="nav-icon">&#127757;</span>
+          <span class="nav-label">Harita</span>
+        </button>
+        <button class="nav-btn" data-view="troops" title="Birlikler">
+          <span class="nav-icon">&#9876;</span>
+          <span class="nav-label">Birlikler</span>
+        </button>
+        <button class="nav-btn" data-view="commands" title="Komutlar">
+          <span class="nav-icon">&#128225;</span>
+          <span class="nav-label">Komutlar</span>
+        </button>
+        <button class="nav-btn" data-view="clan" title="Klan">
+          <span class="nav-icon">&#128081;</span>
+          <span class="nav-label">Klan</span>
+        </button>
+        <button class="nav-btn" data-view="market" title="Pazar">
+          <span class="nav-icon">&#128176;</span>
+          <span class="nav-label">Pazar</span>
+        </button>
+        <button class="nav-btn" data-view="ranking" title="Sıralama">
+          <span class="nav-icon">&#127942;</span>
+          <span class="nav-label">Sıralama</span>
+        </button>
+        <button class="nav-btn" data-view="reports" title="Raporlar">
+          <span class="nav-icon">&#128220;</span>
+          <span class="nav-label">Raporlar</span>
+        </button>
+      </div>
+
+      <!-- Panels Container -->
+      <div id="panels-container">
+        <!-- Building Panel -->
+        <div id="building-panel" class="panel hidden">
+          <div class="panel-header">
+            <h2 id="building-name">Bina</h2>
+            <span class="panel-level" id="building-level">Seviye 0</span>
+            <button class="panel-close">&times;</button>
+          </div>
+          <div class="panel-body">
+            <p id="building-desc"></p>
+            <div id="building-info"></div>
+            <div id="building-cost"></div>
+            <button class="btn btn-primary" id="btn-upgrade">Yükselt</button>
+          </div>
+        </div>
+
+        <!-- Troops Panel -->
+        <div id="troops-panel" class="panel hidden">
+          <div class="panel-header">
+            <h2>Birlikler</h2>
+            <button class="panel-close">&times;</button>
+          </div>
+          <div class="panel-body">
+            <div id="troop-list"></div>
+            <div id="troop-queue"></div>
+          </div>
+        </div>
+
+        <!-- Command Panel -->
+        <div id="command-panel" class="panel hidden">
+          <div class="panel-header">
+            <h2>Komutlar</h2>
+            <button class="panel-close">&times;</button>
+          </div>
+          <div class="panel-body">
+            <div class="command-tabs">
+              <button class="cmd-tab active" data-cmd="outgoing">Giden</button>
+              <button class="cmd-tab" data-cmd="incoming">Gelen</button>
+            </div>
+            <div id="command-list"></div>
+          </div>
+        </div>
+
+        <!-- Attack/Support Panel -->
+        <div id="attack-panel" class="panel hidden">
+          <div class="panel-header">
+            <h2 id="attack-panel-title">Saldırı Gönder</h2>
+            <button class="panel-close">&times;</button>
+          </div>
+          <div class="panel-body">
+            <div class="target-info">
+              <span>Hedef: </span><strong id="attack-target-name"></strong>
+              <span id="attack-target-coords"></span>
+            </div>
+            <div id="attack-troop-select"></div>
+            <div class="attack-actions">
+              <button class="btn btn-danger" id="btn-send-attack">Saldır</button>
+              <button class="btn btn-success" id="btn-send-support">Destek</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Clan Panel -->
+        <div id="clan-panel" class="panel hidden">
+          <div class="panel-header">
+            <h2>Klan</h2>
+            <button class="panel-close">&times;</button>
+          </div>
+          <div class="panel-body" id="clan-content"></div>
+        </div>
+
+        <!-- Market Panel -->
+        <div id="market-panel" class="panel hidden">
+          <div class="panel-header">
+            <h2>Pazar</h2>
+            <button class="panel-close">&times;</button>
+          </div>
+          <div class="panel-body" id="market-content"></div>
+        </div>
+
+        <!-- Ranking Panel -->
+        <div id="ranking-panel" class="panel hidden">
+          <div class="panel-header">
+            <h2>Sıralama</h2>
+            <button class="panel-close">&times;</button>
+          </div>
+          <div class="panel-body" id="ranking-content"></div>
+        </div>
+
+        <!-- Reports Panel -->
+        <div id="reports-panel" class="panel hidden">
+          <div class="panel-header">
+            <h2>Savaş Raporları</h2>
+            <button class="panel-close">&times;</button>
+          </div>
+          <div class="panel-body" id="reports-content"></div>
+        </div>
+
+        <!-- Messages Panel -->
+        <div id="messages-panel" class="panel hidden">
+          <div class="panel-header">
+            <h2>Mesajlar</h2>
+            <button class="panel-close">&times;</button>
+          </div>
+          <div class="panel-body" id="messages-content"></div>
+        </div>
+      </div>
+
+      <!-- Build Queue Display -->
+      <div id="queue-display" class="hidden">
+        <div id="build-queue-list"></div>
+        <div id="troop-queue-list"></div>
+      </div>
+
+      <!-- Notifications -->
+      <div id="notifications"></div>
+
+      <!-- Loading Overlay -->
+      <div id="loading-overlay" class="hidden">
+        <div class="loading-spinner"></div>
+        <p>Yükleniyor...</p>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="/src/main.js"></script>
+</body>
+</html>
