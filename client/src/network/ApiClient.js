@@ -36,9 +36,9 @@ class ApiClient {
     });
 
     // Token süresi dolduysa yenile
-    if (response.status === 401) {
-      const data = await response.json();
-      if (data.code === 'TOKEN_EXPIRED' && this.refreshToken) {
+    if (response.status === 401 && this.refreshToken) {
+      const data = await response.clone().json();
+      if (data.code === 'TOKEN_EXPIRED') {
         const refreshed = await this.refreshAccessToken();
         if (refreshed) {
           headers['Authorization'] = `Bearer ${this.accessToken}`;
