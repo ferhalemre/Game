@@ -35,6 +35,16 @@ app.set('io', io);
 // Statik dosyalar (admin panel)
 app.use('/admin', express.static('admin'));
 
+// Production: serve client build
+import path from 'path';
+import { fileURLToPath } from 'url';
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+if (process.env.NODE_ENV === 'production') {
+  app.use(express.static(path.join(__dirname, '../dist/client')));
+}
+
 // API Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/villages', auth, villageRoutes);
@@ -45,6 +55,13 @@ app.use('/api/market', marketRoutes);
 app.use('/api/rankings', rankingRoutes);
 app.use('/api/messages', messageRoutes);
 app.use('/api/admin', adminRoutes);
+
+// Production: SPA fallback
+if (process.env.NODE_ENV === 'production') {
+  app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, '../dist/client/index.html'));
+  });
+}
 
 // Error handler
 app.use(errorHandler);
